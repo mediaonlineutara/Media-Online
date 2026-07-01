@@ -9,7 +9,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 //  ISI SAMA dengan link CSV di index.html & share.js  →  tempel link CSV Sheets:
 // ═══════════════════════════════════════════════════════════════════════════
-const SHEET_CSV_URL = "TEMPEL_LINK_CSV_DISINI";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZiJcrhwbweMcyjaIuRnrjV7aM-7Njwig6saIedosP77Qtp5Q7Wo-it-XuuKiUGV3NnAQkYMMO0UiM/pub?gid=632581624&single=true&output=csv";
 
 function parseCSV(text) {
   const rows = [];
