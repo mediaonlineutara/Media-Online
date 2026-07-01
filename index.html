@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPI — Warta &amp; Renungan</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ── WARNA TEMA (ubah 2 baris ini kalau mau ganti warna) ── */
+  :root{
+    --maroon:   #6b1f2a;
+    --maroon-dk:#4d1620;
+    --gold:     #c9933a;
+    --gold-lt:  #f5e9d4;
+    --bg:       #f5f3ef;
+    --card:     #ffffff;
+    --text:     #1c1917;
+    --muted:    #78716c;
+    --line:     #e7e3db;
+    --radius:   14px;
+    --max:      680px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:14px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block}
+
+  /* ════════ KOP SURAT ════════ */
+  .kop{
+    max-width:var(--max);
+    margin:0 auto;
+    background:var(--card);
+    border-bottom:4px solid var(--gold);
+  }
+  /* Kop surat asli nanti tinggal ganti isi .kop-demo dengan:
+     <img src="kop-surat.png" alt="Kop Surat GPI" style="width:100%"> */
+  .kop-demo{
+    display:flex;align-items:center;gap:16px;
+    padding:16px 20px;
+    border-bottom:2px solid var(--maroon);
+  }
+  .kop-logo{
+    width:66px;height:66px;flex-shrink:0;border-radius:50%;
+    background:var(--maroon);color:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:20px;letter-spacing:1px;
+    border:2px solid var(--gold);
+  }
+  .kop-text{text-align:center;flex:1;line-height:1.25}
+  .kop-text .l1{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+  .kop-text .l2{font-size:20px;font-weight:800;color:var(--maroon)}
+  .kop-text .l3{font-size:15px;font-weight:700;color:var(--gold)}
+  .kop-text .l4{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* ════════ JUDUL SECTION ════════ */
+  .section-title{
+    max-width:var(--max);margin:0 auto;
+    padding:14px 20px 8px;
+    font-size:13px;font-weight:700;color:var(--maroon);
+    text-transform:uppercase;letter-spacing:1px;
+  }
+
+  /* ════════ DAFTAR GAYA WHATSAPP ════════ */
+  .list{max-width:var(--max);margin:0 auto;background:var(--card)}
+  .row{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .row:hover{background:#faf8f4}
+  .row:last-child{border-bottom:none}
+  .thumb{
+    width:58px;height:58px;flex-shrink:0;border-radius:12px;
+    object-fit:cover;background:var(--gold-lt);
+    cursor:zoom-in;
+    border:1px solid var(--line);
+  }
+  .row-body{flex:1;min-width:0}
+  .row-top{display:flex;align-items:baseline;gap:8px}
+  .row-title{
+    flex:1;min-width:0;
+    font-size:15px;font-weight:700;color:var(--text);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .row-date{
+    flex-shrink:0;font-size:11px;font-weight:600;color:var(--gold);
+    white-space:nowrap;
+  }
+  .row-desc{
+    font-size:13px;color:var(--muted);margin-top:2px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  /* status muat & tombol lihat lainnya */
+  .status{max-width:var(--max);margin:0 auto;padding:18px;text-align:center;color:var(--muted)}
+  .more-wrap{max-width:var(--max);margin:0 auto;padding:14px 16px 30px;text-align:center;background:var(--card)}
+  .more-btn{
+    background:var(--maroon);color:#fff;border:none;
+    padding:11px 26px;border-radius:30px;
+    font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;
+    transition:background .15s;
+  }
+  .more-btn:hover{background:var(--maroon-dk)}
+
+  /* ════════ LIGHTBOX (foto membesar) ════════ */
+  .lightbox{
+    position:fixed;inset:0;z-index:1000;
+    background:rgba(0,0,0,.9);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;cursor:zoom-out;
+  }
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:100%;max-height:90vh;border-radius:8px}
+
+  /* ════════ HALAMAN ARTIKEL (geser dari kanan) ════════ */
+  .article{
+    position:fixed;inset:0;z-index:900;
+    background:var(--bg);
+    transform:translateX(100%);
+    transition:transform .28s ease;
+    overflow-y:auto;
+  }
+  .article.open{transform:translateX(0)}
+  .article-bar{
+    position:sticky;top:0;z-index:5;
+    background:var(--maroon);color:#fff;
+    display:flex;align-items:center;gap:14px;
+    padding:14px 18px;
+  }
+  .back-btn{
+    background:none;border:none;color:#fff;
+    font-size:22px;cursor:pointer;line-height:1;padding:0;
+  }
+  .article-bar span{font-size:15px;font-weight:700;flex:1}
+  .share-btn{
+    flex-shrink:0;background:var(--gold);color:#3a2a10;border:none;
+    padding:7px 15px;border-radius:20px;
+    font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;
+  }
+  .share-btn:active{opacity:.8}
+  .article-inner{max-width:var(--max);margin:0 auto;padding:0 0 40px}
+  .article-hero{width:100%;max-height:320px;object-fit:cover;cursor:zoom-in;background:var(--gold-lt)}
+  .article-pad{padding:20px}
+  .article-title{font-size:22px;font-weight:800;color:var(--maroon);line-height:1.3}
+  .article-meta{font-size:12px;color:var(--muted);margin:6px 0 16px;
+    padding-bottom:12px;border-bottom:2px solid var(--gold)}
+  .article-text{font-size:15px;line-height:1.8;color:var(--text)}
+  .article-text p{margin-bottom:14px}
+  .gallery-title{margin-top:24px;font-size:13px;font-weight:700;color:var(--maroon);
+    text-transform:uppercase;letter-spacing:1px}
+  .gallery{display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+  .gal-img{
+    width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;
+    cursor:zoom-in;background:var(--gold-lt);border:1px solid var(--line);
+  }
+  @media(max-width:430px){.gallery{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+  <!-- ═══ KOP SURAT ═══ -->
+  <header class="kop">
+    <div class="kop-demo">
+      <div class="kop-logo">GPI</div>
+      <div class="kop-text">
+        <div class="l1">Gereja Protestan Indonesia</div>
+        <div class="l2">PIMPINAN PUSAT GPI</div>
+        <div class="l3">Warta &amp; Renungan Jemaat</div>
+        <div class="l4">Jl. Contoh No. 1 · Telp. (000) 000-0000 · gpipusat.vercel.app</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ JUDUL SECTION ═══ -->
+  <div class="section-title">Warta Terbaru</div>
+
+  <!-- ═══ DAFTAR (diisi otomatis) ═══ -->
+  <div class="list" id="list"></div>
+  <div class="status" id="status">Memuat warta...</div>
+  <div class="more-wrap" id="more-wrap" style="display:none">
+    <button class="more-btn" id="more-btn"></button>
+  </div>
+
+  <!-- ═══ LIGHTBOX ═══ -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- ═══ HALAMAN ARTIKEL ═══ -->
+  <div class="article" id="article">
+    <div class="article-bar">
+      <button class="back-btn" onclick="tutupArtikel()">&#8592;</button>
+      <span>Kembali</span>
+      <button class="share-btn" id="art-share">&#128257; Bagikan</button>
+    </div>
+    <div class="article-inner">
+      <img class="article-hero" id="art-hero" src="" alt="">
+      <div class="article-pad">
+        <div class="article-title" id="art-title"></div>
+        <div class="article-meta" id="art-meta"></div>
+        <div class="article-text" id="art-text"></div>
+        <div class="gallery-title" id="art-gallery-title" style="display:none">Foto Lainnya</div>
+        <div class="gallery" id="art-gallery"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  /* ═══════════════════════════════════════════════════════════
+     PENGATURAN — 1 baris yang perlu Agus isi
+     ═══════════════════════════════════════════════════════════
+     Tempel link CSV Google Sheets di bawah ini.
+     Cara dapat link: di Google Sheets → File → Bagikan → Publikasikan ke web
+     → pilih tab "Warta" → format "Comma-separated values (.csv)" → salin link.
+
+     KOLOM DI GOOGLE SHEETS (baris 1 = judul kolom, diabaikan):
+       A = Judul
+       B = Keterangan (ringkasan singkat, tampil di bawah judul)
+       C = Isi (artikel lengkap — pakai Alt+Enter untuk ganti baris)
+       D = Link Gambar Utama (link "Bagikan" dari Google Drive)
+       E = Tanggal (contoh: Minggu, 1 Juli 2026) — opsional
+       F = Gambar Tambahan (opsional) — beberapa link Drive untuk galeri di dalam
+           artikel. Pisahkan tiap link dengan Alt+Enter (baris baru) atau koma.
+
+     Tambahkan warta baru di BARIS PALING BAWAH. Yang terbaru otomatis tampil di atas.
+  ═══════════════════════════════════════════════════════════ */
+  const SHEET_CSV_URL = "TEMPEL_LINK_CSV_DISINI";
+
+  const TAMPIL_AWAL = 15;   // tampil pertama
+  const TAMPIL_MAX  = 30;   // batas maksimal
+
+  /* ── Data contoh (dipakai kalau CSV belum diisi / gagal dimuat) ── */
+  const DATA_CONTOH = [
+    { id:3, judul:"Renungan: Berjalan dalam Terang", tanggal:"Minggu, 1 Juli 2026",
+      keterangan:"Firman-Mu itu pelita bagi kakiku dan terang bagi jalanku (Mzm 119:105).",
+      gambar:"https://picsum.photos/seed/renungan/800/500",
+      gambarLain:[
+        "https://picsum.photos/seed/r1/600/600",
+        "https://picsum.photos/seed/r2/600/600",
+        "https://picsum.photos/seed/r3/600/600"
+      ],
+      isi:"Mazmur 119:105 mengingatkan kita bahwa Firman Tuhan adalah pelita bagi kaki dan terang bagi jalan hidup.\nBerjalan dalam terang berarti membiarkan Firman itu menuntun setiap langkah.\nMari hari ini kita mulai dengan doa." },
+    { id:2, judul:"Pengumuman Ibadah Minggu", tanggal:"Sabtu, 30 Juni 2026",
+      keterangan:"Ibadah Minggu dilaksanakan pukul 09.00 WIB. Diharapkan jemaat hadir tepat waktu.",
+      gambar:"https://picsum.photos/seed/ibadah/800/500",
+      gambarLain:[],
+      isi:"Dengan hormat kami sampaikan bahwa Ibadah Minggu akan dilaksanakan pukul 09.00 WIB.\nKiranya Tuhan memberkati persekutuan kita." },
+    { id:1, judul:"Poster: Retret Pemuda 2026", tanggal:"Jumat, 29 Juni 2026",
+      keterangan:"Ikuti Retret Pemuda GPI dengan tema 'Dipanggil untuk Melayani'.",
+      gambar:"https://picsum.photos/seed/retret/800/1000",
+      gambarLain:[
+        "https://picsum.photos/seed/p1/600/600",
+        "https://picsum.photos/seed/p2/600/600"
+      ],
+      isi:"Panitia Retret Pemuda GPI mengundang seluruh pemuda-pemudi untuk mengikuti Retret 2026.\nPendaftaran dibuka mulai hari ini hingga kuota terpenuhi." }
+  ];
+
+  let SEMUA = [];          // semua warta (untuk buka artikel dari link share)
+  let DATA = [];           // daftar yang ditampilkan (maks 30)
+  let artikelAktif = null;
+
+  /* ── Ambil ID dari berbagai format link Google Drive ── */
+  function driveId(input){
+    if(!input) return null;
+    input = input.trim();
+    let m = input.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if(m) return m[1];
+    m = input.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if(m) return m[1];
+    if(/^[a-zA-Z0-9_-]{20,}$/.test(input)) return input;
+    return null;
+  }
+  /* ── Bangun URL gambar (format lh3 yang terbukti jalan) ── */
+  function gambarUrl(link, lebar){
+    const id = driveId(link);
+    if(id) return "https://lh3.googleusercontent.com/d/" + id + "=w" + lebar;
+    return link || ""; // kalau bukan link Drive, pakai apa adanya
+  }
+  /* ── Pisahkan beberapa link gambar (dipisah baris baru / koma / spasi) ── */
+  function parseGambarLain(raw){
+    if(!raw) return [];
+    return raw.split(/[\s,;]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+  }
+
+  /* ── Parser CSV robust (handle koma & baris baru di dalam sel) ── */
+  function parseCSV(text){
+    const rows=[]; let i=0;
+    while(i<text.length){
+      const row=[];
+      while(i<text.length){
+        let field="";
+        if(text[i]==='"'){
+          i++;
+          while(i<text.length){
+            if(text[i]==='"'){
+              if(i+1<text.length && text[i+1]==='"'){ field+='"'; i+=2; }
+              else { i++; break; }
+            } else { field+=text[i]; i++; }
+          }
+        } else {
+          while(i<text.length && text[i]!==',' && text[i]!=='\n' && text[i]!=='\r'){ field+=text[i]; i++; }
+        }
+        row.push(field.trim());
+        if(i<text.length && text[i]===','){ i++; }
+        else { if(i<text.length && text[i]==='\r') i++; if(i<text.length && text[i]==='\n') i++; break; }
+      }
+      if(row.length>1 && row.some(f=>f!=="")) rows.push(row);
+    }
+    return rows;
+  }
+
+  /* ── Terapkan data ke tampilan ── */
+  function terapkan(itemsTampil){
+    SEMUA = itemsTampil;                       // semua item (urutan terbaru dulu)
+    DATA  = itemsTampil.slice(0, TAMPIL_MAX);  // maksimal 30 untuk daftar
+    tampilkan();
+    cekLinkArtikel();
+  }
+
+  /* ── Muat data dari Google Sheets ── */
+  async function muatData(){
+    const belumDiisi = !SHEET_CSV_URL || SHEET_CSV_URL.indexOf("TEMPEL_LINK") !== -1;
+    if(belumDiisi){ terapkan(DATA_CONTOH.slice()); return; }
+    try{
+      const res = await fetch(SHEET_CSV_URL);
+      if(!res.ok) throw new Error("gagal");
+      const rows = parseCSV(await res.text());
+      rows.shift(); // buang baris judul kolom
+      const semua = rows.map(function(r, idx){ return {
+        id:         idx + 1,      // nomor baris di Sheets (tetap) — dipakai link share
+        judul:      r[0] || "",
+        keterangan: r[1] || "",
+        isi:        r[2] || "",
+        gambar:     r[3] || "",
+        tanggal:    r[4] || "",
+        gambarLain: parseGambarLain(r[5])
+      };}).filter(function(d){ return d.judul; });
+      if(semua.length === 0){ terapkan(DATA_CONTOH.slice()); return; }
+      terapkan(semua.reverse());   // baris terbawah (terbaru) tampil di atas
+    }catch(e){
+      terapkan(DATA_CONTOH.slice());
+    }
+  }
+
+  /* ── Buka artikel otomatis dari link share (?a=ID) ── */
+  function cekLinkArtikel(){
+    const id = new URLSearchParams(location.search).get('a');
+    if(!id) return;
+    const item = SEMUA.find(function(x){ return String(x.id) === String(id); });
+    if(item) bukaArtikel(item);
+  }
+
+  /* ── Tampilkan daftar (15 dulu, sisanya lewat tombol) ── */
+  const list = document.getElementById('list');
+  const statusEl = document.getElementById('status');
+  const moreWrap = document.getElementById('more-wrap');
+  const moreBtn  = document.getElementById('more-btn');
+
+  function buatBaris(item){
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML =
+      '<img class="thumb" src="' + gambarUrl(item.gambar,300) + '" alt="" loading="lazy">' +
+      '<div class="row-body">' +
+        '<div class="row-top"><div class="row-title"></div><div class="row-date"></div></div>' +
+        '<div class="row-desc"></div>' +
+      '</div>';
+    row.querySelector('.row-title').textContent = item.judul;
+    row.querySelector('.row-date').textContent  = item.tanggal || "";
+    row.querySelector('.row-desc').textContent  = item.keterangan;
+    row.querySelector('.thumb').addEventListener('click', function(e){
+      e.stopPropagation();
+      bukaLightbox(gambarUrl(item.gambar,1200));
+    });
+    row.addEventListener('click', function(){ bukaArtikel(item); });
+    return row;
+  }
+
+  function tampilkan(){
+    statusEl.style.display = 'none';
+    list.innerHTML = '';
+    DATA.slice(0, TAMPIL_AWAL).forEach(function(item){ list.appendChild(buatBaris(item)); });
+
+    if(DATA.length > TAMPIL_AWAL){
+      const sisa = DATA.length - TAMPIL_AWAL;
+      moreBtn.textContent = 'Lihat lainnya (' + sisa + ')';
+      moreWrap.style.display = 'block';
+      moreBtn.onclick = function(){
+        DATA.slice(TAMPIL_AWAL).forEach(function(item){ list.appendChild(buatBaris(item)); });
+        moreWrap.style.display = 'none';
+      };
+    } else {
+      moreWrap.style.display = 'none';
+    }
+  }
+
+  /* ── Lightbox (foto membesar) ── */
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  function bukaLightbox(src){ lbImg.src = src; lb.classList.add('open'); }
+  lb.addEventListener('click', function(){ lb.classList.remove('open'); });
+
+  /* ── Halaman artikel ── */
+  const art = document.getElementById('article');
+  function bukaArtikel(item){
+    const d = item;
+    artikelAktif = item;
+    document.getElementById('art-hero').src = gambarUrl(d.gambar,1000);
+    document.getElementById('art-title').textContent = d.judul;
+    document.getElementById('art-meta').textContent  = d.tanggal || "";
+    const teks = document.getElementById('art-text');
+    teks.innerHTML = '';
+    (d.isi||"").split('\n').filter(function(p){ return p.trim(); }).forEach(function(p){
+      const el = document.createElement('p');
+      el.textContent = p.trim();
+      teks.appendChild(el);
+    });
+    document.getElementById('art-hero').onclick = function(){ bukaLightbox(gambarUrl(d.gambar,1200)); };
+
+    // Galeri foto tambahan
+    const galeri = document.getElementById('art-gallery');
+    const galeriTitle = document.getElementById('art-gallery-title');
+    galeri.innerHTML = '';
+    const fotoLain = d.gambarLain || [];
+    if(fotoLain.length){
+      fotoLain.forEach(function(link){
+        const g = document.createElement('img');
+        g.className = 'gal-img';
+        g.src = gambarUrl(link, 400);
+        g.loading = 'lazy';
+        g.addEventListener('click', function(){ bukaLightbox(gambarUrl(link,1200)); });
+        galeri.appendChild(g);
+      });
+      galeri.style.display = 'grid';
+      galeriTitle.style.display = 'block';
+    } else {
+      galeri.style.display = 'none';
+      galeriTitle.style.display = 'none';
+    }
+
+    document.getElementById('art-share').onclick = function(){ bagikan(item); };
+
+    art.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function tutupArtikel(){
+    art.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── Bagikan artikel ke WhatsApp (pakai link /api/share?id=..) ── */
+  function bagikan(item){
+    const asal = (location.origin && location.origin.indexOf('http') === 0) ? location.origin : '';
+    const url  = asal + '/api/share?id=' + item.id + '&t=' + Date.now();
+    if(navigator.share){
+      navigator.share({ title: item.judul, text: item.judul, url: url }).catch(function(){});
+    } else {
+      window.open('https://wa.me/?text=' + encodeURIComponent(item.judul + '\n' + url), '_blank');
+    }
+  }
+
+  /* ── Jalankan ── */
+  muatData();
+</script>
+</body>
+</html>
