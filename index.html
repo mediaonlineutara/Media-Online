@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPI — Warta &amp; Renungan</title>
+<title>Media Online Utara — Berita</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* ── WARNA TEMA (ubah 2 baris ini kalau mau ganti warna) ── */
@@ -39,7 +39,7 @@
     border-bottom:4px solid var(--gold);
   }
   /* Kop surat asli nanti tinggal ganti isi .kop-demo dengan:
-     <img src="kop-surat.png" alt="Kop Surat GPI" style="width:100%"> */
+     <img src="kop-surat.png" alt="Kop Surat" style="width:100%"> */
   .kop-demo{
     display:flex;align-items:center;gap:16px;
     padding:16px 20px;
@@ -170,22 +170,22 @@
   <!-- ═══ KOP SURAT ═══ -->
   <header class="kop">
     <div class="kop-demo">
-      <div class="kop-logo">GPI</div>
+      <div class="kop-logo">MOU</div>
       <div class="kop-text">
-        <div class="l1">Gereja Protestan Indonesia</div>
-        <div class="l2">PIMPINAN PUSAT GPI</div>
-        <div class="l3">Warta &amp; Renungan Jemaat</div>
-        <div class="l4">Jl. Contoh No. 1 · Telp. (000) 000-0000 · gpipusat.vercel.app</div>
+        <div class="l1">Portal Berita</div>
+        <div class="l2">MEDIA ONLINE UTARA</div>
+        <div class="l3">Berita Terkini &amp; Terpercaya</div>
+        <div class="l4">Sumatera Utara · media-online-six.vercel.app</div>
       </div>
     </div>
   </header>
 
   <!-- ═══ JUDUL SECTION ═══ -->
-  <div class="section-title">Warta Terbaru</div>
+  <div class="section-title">Berita Terbaru</div>
 
   <!-- ═══ DAFTAR (diisi otomatis) ═══ -->
   <div class="list" id="list"></div>
-  <div class="status" id="status">Memuat warta...</div>
+  <div class="status" id="status">Memuat berita...</div>
   <div class="more-wrap" id="more-wrap" style="display:none">
     <button class="more-btn" id="more-btn"></button>
   </div>
@@ -231,7 +231,7 @@
        F = Gambar Tambahan (opsional) — beberapa link Drive untuk galeri di dalam
            artikel. Pisahkan tiap link dengan Alt+Enter (baris baru) atau koma.
 
-     Tambahkan warta baru di BARIS PALING BAWAH. Yang terbaru otomatis tampil di atas.
+     Tambahkan berita baru di BARIS PALING BAWAH. Yang terbaru otomatis tampil di atas.
   ═══════════════════════════════════════════════════════════ */
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZiJcrhwbweMcyjaIuRnrjV7aM-7Njwig6saIedosP77Qtp5Q7Wo-it-XuuKiUGV3NnAQkYMMO0UiM/pub?gid=632581624&single=true&output=csv";
 
@@ -240,31 +240,31 @@
 
   /* ── Data contoh (dipakai kalau CSV belum diisi / gagal dimuat) ── */
   const DATA_CONTOH = [
-    { id:3, judul:"Renungan: Berjalan dalam Terang", tanggal:"Minggu, 1 Juli 2026",
-      keterangan:"Firman-Mu itu pelita bagi kakiku dan terang bagi jalanku (Mzm 119:105).",
-      gambar:"https://picsum.photos/seed/renungan/800/500",
+    { id:3, judul:"Pemerintah Daerah Luncurkan Program Baru", tanggal:"Minggu, 1 Juli 2026",
+      keterangan:"Program bertujuan meningkatkan pelayanan publik dan pembangunan di wilayah Sumatera Utara.",
+      gambar:"https://picsum.photos/seed/berita1/800/500",
       gambarLain:[
-        "https://picsum.photos/seed/r1/600/600",
-        "https://picsum.photos/seed/r2/600/600",
-        "https://picsum.photos/seed/r3/600/600"
+        "https://picsum.photos/seed/b1/600/600",
+        "https://picsum.photos/seed/b2/600/600",
+        "https://picsum.photos/seed/b3/600/600"
       ],
-      isi:"Mazmur 119:105 mengingatkan kita bahwa Firman Tuhan adalah pelita bagi kaki dan terang bagi jalan hidup.\nBerjalan dalam terang berarti membiarkan Firman itu menuntun setiap langkah.\nMari hari ini kita mulai dengan doa." },
-    { id:2, judul:"Pengumuman Ibadah Minggu", tanggal:"Sabtu, 30 Juni 2026",
-      keterangan:"Ibadah Minggu dilaksanakan pukul 09.00 WIB. Diharapkan jemaat hadir tepat waktu.",
-      gambar:"https://picsum.photos/seed/ibadah/800/500",
+      isi:"Pemerintah daerah resmi meluncurkan program baru yang bertujuan meningkatkan pelayanan kepada masyarakat.\nProgram ini akan berjalan bertahap dan melibatkan berbagai pihak.\nMasyarakat diharapkan turut mendukung agar program berjalan lancar." },
+    { id:2, judul:"Harga Kebutuhan Pokok Stabil Pekan Ini", tanggal:"Sabtu, 30 Juni 2026",
+      keterangan:"Pantauan di sejumlah pasar menunjukkan harga bahan pokok relatif stabil sepanjang pekan.",
+      gambar:"https://picsum.photos/seed/berita2/800/500",
       gambarLain:[],
-      isi:"Dengan hormat kami sampaikan bahwa Ibadah Minggu akan dilaksanakan pukul 09.00 WIB.\nKiranya Tuhan memberkati persekutuan kita." },
-    { id:1, judul:"Poster: Retret Pemuda 2026", tanggal:"Jumat, 29 Juni 2026",
-      keterangan:"Ikuti Retret Pemuda GPI dengan tema 'Dipanggil untuk Melayani'.",
-      gambar:"https://picsum.photos/seed/retret/800/1000",
+      isi:"Berdasarkan pantauan di sejumlah pasar, harga kebutuhan pokok pekan ini terpantau stabil.\nBeberapa komoditas mengalami sedikit penurunan.\nPedagang berharap kondisi ini bertahan hingga waktu mendatang." },
+    { id:1, judul:"Kegiatan Gotong Royong Warga Berjalan Lancar", tanggal:"Jumat, 29 Juni 2026",
+      keterangan:"Warga bersama-sama membersihkan lingkungan dalam kegiatan gotong royong akhir pekan.",
+      gambar:"https://picsum.photos/seed/berita3/800/1000",
       gambarLain:[
-        "https://picsum.photos/seed/p1/600/600",
-        "https://picsum.photos/seed/p2/600/600"
+        "https://picsum.photos/seed/b4/600/600",
+        "https://picsum.photos/seed/b5/600/600"
       ],
-      isi:"Panitia Retret Pemuda GPI mengundang seluruh pemuda-pemudi untuk mengikuti Retret 2026.\nPendaftaran dibuka mulai hari ini hingga kuota terpenuhi." }
+      isi:"Kegiatan gotong royong warga berlangsung lancar dan diikuti banyak peserta.\nLingkungan menjadi lebih bersih dan rapi setelah kegiatan.\nKegiatan serupa direncanakan akan rutin dilakukan." }
   ];
 
-  let SEMUA = [];          // semua warta (untuk buka artikel dari link share)
+  let SEMUA = [];          // semua berita (untuk buka artikel dari link share)
   let DATA = [];           // daftar yang ditampilkan (maks 30)
   let artikelAktif = null;
 
