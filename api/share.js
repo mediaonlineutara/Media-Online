@@ -12,7 +12,7 @@
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZiJcrhwbweMcyjaIuRnrjV7aM-7Njwig6saIedosP77Qtp5Q7Wo-it-XuuKiUGV3NnAQkYMMO0UiM/pub?gid=632581624&single=true&output=csv";
 
 // Nama situs (muncul kecil di preview) — silakan ganti.
-const NAMA_SITUS = "GPI — Warta & Renungan";
+const NAMA_SITUS = "Media Online Utara";
 
 // ── Parser CSV (sama dengan yang di index.html) ──
 function parseCSV(text) {
@@ -102,11 +102,11 @@ export default async function handler(req, res) {
 
     if (!row) {
       return res.status(200).send(generateHTML(
-        NAMA_SITUS, "Warta & renungan jemaat GPI.", KOP_URL, shareUrl, redirectUrl
+        NAMA_SITUS, "Berita terkini Media Online Utara.", KOP_URL, shareUrl, redirectUrl
       ));
     }
 
-    const judul      = row[0] || "Warta GPI";
+    const judul      = row[0] || "Berita";
     const keterangan = row[1] || "";
     const isi        = row[2] || "";
     const gambar     = row[3] || "";
@@ -125,7 +125,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     return res.status(200).send(generateHTML(
-      NAMA_SITUS, "Warta & renungan jemaat GPI.", KOP_URL, shareUrl, redirectUrl
+      NAMA_SITUS, "Berita terkini Media Online Utara.", KOP_URL, shareUrl, redirectUrl
     ));
   }
 }
