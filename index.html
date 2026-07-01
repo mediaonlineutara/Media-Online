@@ -200,7 +200,7 @@
     <div class="article-bar">
       <button class="back-btn" onclick="tutupArtikel()">&#8592;</button>
       <span>Kembali</span>
-      <button class="share-btn" id="art-share">&#128257; Bagikan</button>
+      <button class="share-btn" id="art-share">&#128203; Salin Link</button>
     </div>
     <div class="article-inner">
       <img class="article-hero" id="art-hero" src="" alt="">
@@ -447,7 +447,9 @@
       galeriTitle.style.display = 'none';
     }
 
-    document.getElementById('art-share').onclick = function(){ bagikan(item); };
+    const tombolSalin = document.getElementById('art-share');
+    tombolSalin.innerHTML = '&#128203; Salin Link';
+    tombolSalin.onclick = function(){ bagikan(item, tombolSalin); };
 
     art.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -457,15 +459,29 @@
     document.body.style.overflow = '';
   }
 
-  /* ── Bagikan artikel ke WhatsApp (pakai link /api/share?id=..) ── */
-  function bagikan(item){
+  /* ── Salin link artikel (untuk dibagikan; preview WhatsApp tetap muncul saat di-paste) ── */
+  function bagikan(item, tombol){
     const asal = (location.origin && location.origin.indexOf('http') === 0) ? location.origin : '';
     const url  = asal + '/api/share?id=' + item.id + '&t=' + Date.now();
-    if(navigator.share){
-      navigator.share({ title: item.judul, text: item.judul, url: url }).catch(function(){});
-    } else {
-      window.open('https://wa.me/?text=' + encodeURIComponent(item.judul + '\n' + url), '_blank');
+
+    function sukses(){
+      if(!tombol) return;
+      tombol.innerHTML = '&#10003; Tersalin!';
+      setTimeout(function(){ tombol.innerHTML = '&#128203; Salin Link'; }, 1800);
     }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(sukses).catch(function(){ salinCadangan(url, sukses); });
+    } else {
+      salinCadangan(url, sukses);
+    }
+  }
+  function salinCadangan(teks, cb){
+    const ta = document.createElement('textarea');
+    ta.value = teks; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+    if(cb) cb();
   }
 
   /* ── Jalankan ── */
