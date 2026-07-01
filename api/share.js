@@ -74,10 +74,12 @@ function generateHTML(title, description, imageUrl, shareUrl, redirectUrl) {
   <meta name="twitter:title"       content="${esc(title)}" />
   <meta name="twitter:description" content="${esc(description)}" />
   <meta name="twitter:image"       content="${imageUrl}" />
-  <meta http-equiv="refresh" content="0;url=${redirectUrl}" />
   <style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#6b1f2a;color:#fff}p{text-align:center}a{color:#c9933a}</style>
 </head>
-<body><p>Memuat...<br><a href="${redirectUrl}">Klik di sini jika tidak otomatis</a></p></body>
+<body>
+  <p>Memuat...<br><a href="${redirectUrl}">Klik di sini jika tidak otomatis</a></p>
+  <script>location.replace(${JSON.stringify(redirectUrl)});</script>
+</body>
 </html>`;
 }
 
