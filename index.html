@@ -62,8 +62,16 @@
   .section-title{
     max-width:var(--max);margin:0 auto;
     padding:14px 20px 8px;
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  }
+  .section-title .st-label{
     font-size:13px;font-weight:700;color:var(--maroon);
     text-transform:uppercase;letter-spacing:1px;
+  }
+  .section-title .st-date{
+    flex-shrink:0;
+    font-size:11px;font-weight:600;color:var(--muted);
+    text-align:right;white-space:nowrap;
   }
 
   /* ════════ DAFTAR GAYA WHATSAPP ════════ */
@@ -181,7 +189,10 @@
   </header>
 
   <!-- ═══ JUDUL SECTION ═══ -->
-  <div class="section-title">Berita Terbaru</div>
+  <div class="section-title">
+    <span class="st-label">Berita Terbaru</span>
+    <span class="st-date" id="datetime"></span>
+  </div>
 
   <!-- ═══ DAFTAR (diisi otomatis) ═══ -->
   <div class="list" id="list"></div>
@@ -483,6 +494,20 @@
     document.body.removeChild(ta);
     if(cb) cb();
   }
+
+  /* ── Tanggal & jam sekarang (zona WIB), tampil di kanan judul ── */
+  function tampilkanWaktu(){
+    const el = document.getElementById('datetime');
+    if(!el) return;
+    const now = new Date();
+    const tgl = now.toLocaleDateString('id-ID', { timeZone:'Asia/Jakarta',
+      weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    const jam = now.toLocaleTimeString('en-GB', { timeZone:'Asia/Jakarta',
+      hour:'2-digit', minute:'2-digit' });
+    el.textContent = tgl + ' · ' + jam + ' WIB';
+  }
+  tampilkanWaktu();
+  setInterval(tampilkanWaktu, 60000);  // perbarui tiap menit
 
   /* ── Jalankan ── */
   muatData();
